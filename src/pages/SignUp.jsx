@@ -26,7 +26,7 @@ const SignUp = () => {
             <div className="flex justify-center flex-wrap p-6 p-12 max-w-6xl mx-auto items-center ">
                 <div className="md:w-[67%] lg:w-[50%] mb-12 md:mb-6">
                     <img
-                        src="./images/logIn-banner.jpg"
+                        src="./images/reg-banner.jpg"
                         alt="logIn-banner"
                         className="w-full rounded-2xl"
                     />
