@@ -11,7 +11,11 @@ const ButtonBlock = (props) => {
             onClick={onClick}
         >
             <span>{label}</span>
-            {icon && <span className="text-2xl mr-4">{icon}</span>}
+            {icon && (
+                <span className="text-2xl mr-2 bg-white rounded-full">
+                    {icon}
+                </span>
+            )}
         </button>
     );
 };

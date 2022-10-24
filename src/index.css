@@ -2,6 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-    @apply font-vazirmatn
+body {
+    @apply font-vazirmatn bg-emerald-50;
 }
