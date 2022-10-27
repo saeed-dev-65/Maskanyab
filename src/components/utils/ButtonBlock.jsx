@@ -1,11 +1,11 @@
 import React from 'react';
 const ButtonBlock = (props) => {
-    const { type, btnColor, label, icon, onClick } = props;
+    const { type, btnProps, label, icon, onClick } = props;
 
     return (
         <button
             type={type}
-            className={`w-full text-white font-bold px-7 py-3 transition duration-150 ease-in-out rounded shadow-md hover:shadow-lg ${btnColor} ${
+            className={`w-full text-white font-bold px-7 py-3 transition duration-150 ease-in-out rounded shadow-md hover:shadow-lg ${btnProps} ${
                 icon ? 'flex justify-center items-center' : ''
             }`}
             onClick={onClick}

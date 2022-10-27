@@ -5,7 +5,7 @@ const AuthActions = (props) => {
     return (
         <>
             <ButtonBlock
-                btnColor="bg-blue-600 hover:bg-blue-800"
+                btnProps="bg-blue-600 hover:bg-blue-800"
                 type={props.type}
                 label={props.label}
             />
@@ -15,7 +15,7 @@ const AuthActions = (props) => {
                 </p>
             </div>
             <ButtonBlock
-                btnColor="bg-red-600 hover:bg-red-800"
+                btnProps="bg-red-600 hover:bg-red-800 "
                 type={'submit'}
                 label={'ورود با حساب گوگل'}
                 icon={<FcGoogle />}

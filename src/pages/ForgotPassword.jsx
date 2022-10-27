@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import AuthActions from '../components/AuthActions';
+
 import Input from '../components/utils/Input';
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -39,7 +40,7 @@ const ForgotPassword = () => {
                             <p className="text-gray-500 mb-2 md:mb-0">
                                 حساب کاربری ندارید؟{' '}
                                 <Link
-                                    to="/sign-un"
+                                    to="/sign-up"
                                     className="text-red-600 font-bold hover:text-red-700 transition duration-200 ease-in-out"
                                 >
                                     ثبت نام

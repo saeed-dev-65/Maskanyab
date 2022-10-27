@@ -1,23 +1,67 @@
 import React, { useState } from 'react';
-import { MdVisibilityOff, MdVisibility } from 'react-icons/md';
 import { Link } from 'react-router-dom';
+
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    updateProfile,
+} from 'firebase/auth';
+import { db } from '../API/firebase.config';
+
+import { useNavigate } from 'react-router-dom';
 
 import AuthActions from '../components/AuthActions';
 import Input from '../components/utils/Input';
+import { serverTimestamp, setDoc, doc } from 'firebase/firestore';
+import { toast } from 'react-toastify';
+
 const SignUp = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        passwors: '',
+        password: '',
     });
-    const { name, email, password } = formData;
+
+    let { name, email, password } = formData;
+
+    const navigate = useNavigate();
+
     const handelChangeInputs = (event) => {
         setFormData((prevState) => ({
             ...prevState,
             [event.target.id]: event.target.value,
         }));
     };
+    const onSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            const auth = await getAuth();
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+            await updateProfile(auth.currentUser, {
+                displayName: name,
+            });
+            const user = userCredential.user;
+            const copyFormData = { ...formData };
+            delete copyFormData.password;
+            copyFormData.timestamp = serverTimestamp();
+            await setDoc(doc(db, 'users', user.uid), copyFormData);
+            navigate('/');
+            toast.success('ثبت نام با موفقیت انجام شد.');
+        } catch (error) {
+            toast.error(
+                'مشکلی در ثبت نام شما به جود آمده! مجدداً تلاش کنید',
+                error
+            );
+        } finally {
+            setFormData({ name: '', email: '', password: '' });
+        }
+    };
 
+    console.log(formData);
     return (
         <section>
             <h1 className="text-3xl text-center mt-6 font-bold ">
@@ -32,7 +76,7 @@ const SignUp = () => {
                     />
                 </div>
                 <div className="w-full md:w-[67%] lg:w-[40%] lg:mr-12">
-                    <form>
+                    <form onSubmit={onSubmit}>
                         <Input
                             direction="ltr"
                             id="name"
@@ -71,9 +115,8 @@ const SignUp = () => {
                                 </Link>
                             </p>
                         </div>
+                        <AuthActions type="submit" label="ثبت نام" />
                     </form>
-
-                    <AuthActions type="submit" label="ثبت نام" />
                 </div>
             </div>
         </section>
