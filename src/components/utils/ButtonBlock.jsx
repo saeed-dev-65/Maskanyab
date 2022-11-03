@@ -12,7 +12,7 @@ const ButtonBlock = (props) => {
         >
             <span>{label}</span>
             {icon && (
-                <span className="text-2xl mr-2 bg-white rounded-full">
+                <span className="text-2xl mr-2 bg-white p-[1px] rounded-full">
                     {icon}
                 </span>
             )}

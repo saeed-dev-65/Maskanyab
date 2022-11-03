@@ -21,6 +21,11 @@ const SignUp = () => {
         email: '',
         password: '',
     });
+    function errorGenerator(code = '', message = '') {
+        this.code = code;
+        this.message = message;
+    }
+    errorGenerator.prototype = Error.prototype;
 
     let { name, email, password } = formData;
 
@@ -32,9 +37,22 @@ const SignUp = () => {
             [event.target.id]: event.target.value,
         }));
     };
+    let myErrors = [];
     const onSubmit = async (event) => {
         event.preventDefault();
         try {
+            if (formData.name === '') {
+                myErrors.push({
+                    code: 1,
+                    message: 'وارد کردن نام الزامی است.',
+                });
+            }
+            if (formData.email === '') {
+                myErrors.push({
+                    code: 2,
+                    message: 'وارد کردن ایمیل الزامی است.',
+                });
+            }
             const auth = await getAuth();
             const userCredential = await createUserWithEmailAndPassword(
                 auth,
@@ -44,23 +62,23 @@ const SignUp = () => {
             await updateProfile(auth.currentUser, {
                 displayName: name,
             });
+
             const user = userCredential.user;
             const copyFormData = { ...formData };
             delete copyFormData.password;
             copyFormData.timestamp = serverTimestamp();
             await setDoc(doc(db, 'users', user.uid), copyFormData);
+            toast.success('حساب کاربری شما ایجاد شد.');
             navigate('/');
-            toast.success('ثبت نام با موفقیت انجام شد.');
         } catch (error) {
-            toast.error(
-                'مشکلی در ثبت نام شما به جود آمده! مجدداً تلاش کنید',
-                error
-            );
+            myErrors.length > 0
+                ? myErrors.map((error) => toast.error(error.message))
+                : toast.error('خطا! دوباره تلاش کید.');
         } finally {
             setFormData({ name: '', email: '', password: '' });
+            myErrors = [];
         }
     };
-
     console.log(formData);
     return (
         <section>
