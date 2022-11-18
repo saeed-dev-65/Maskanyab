@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { toast } from 'react-toastify';
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Input from '../components/utils/Input';
 
 import AuthActions from '../components/AuthActions';
@@ -15,30 +13,7 @@ const SignIn = () => {
             [event.target.id]: event.target.value,
         }));
     };
-    const navigate = useNavigate();
-    const onSubmit = async (event) => {
-        event.preventDefault();
-        try {
-            const auth = getAuth();
-            const userCredential = await signInWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
-            console.log(userCredential.user);
-            if (userCredential.user) {
-                navigate('/');
-            }
-        } catch (error) {
-            toast.error('خطا در ورود کاربر');
-        }
-    };
-    const fullName = {
-        name: 'saeed',
-        lastName: 'kavand',
-    };
-    const { name, lastName } = fullName;
-    console.log(`Your name is ${name} ${lastName}`);
+
     return (
         <section>
             <h1 className="text-3xl text-center mt-6 font-bold ">
@@ -53,7 +28,7 @@ const SignIn = () => {
                     />
                 </div>
                 <div className="w-full md:w-[67%] lg:w-[40%] lg:mr-12">
-                    <form onSubmit={onSubmit}>
+                    <form>
                         <Input
                             direction="ltr"
                             id="email"
@@ -95,8 +70,9 @@ const SignIn = () => {
                                 </Link>
                             </p>
                         </div>
-                        <AuthActions type="submit" label="ورود" />
                     </form>
+
+                    <AuthActions type="submit" label="ورود" />
                 </div>
             </div>
         </section>
