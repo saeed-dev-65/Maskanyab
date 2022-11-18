@@ -1,6 +1,8 @@
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import React, { useState } from 'react';
 
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import AuthActions from '../components/AuthActions';
 
@@ -10,6 +12,18 @@ const ForgotPassword = () => {
 
     const handelChangeInputs = (event) => {
         setEmail(event.target.value);
+    };
+
+    const onSubmit = async (event) => {
+        event.preventDefault();
+
+        try {
+            const auth = getAuth();
+            await sendPasswordResetEmail(auth, email);
+            toast.success(` ${email} کد بازیابی شما به ارسال شد`);
+        } catch (error) {
+            toast.error('امکان ارسال کد بازیابی وجود ندارد');
+        }
     };
 
     return (
@@ -26,7 +40,7 @@ const ForgotPassword = () => {
                     />
                 </div>
                 <div className="w-full md:w-[67%] lg:w-[40%] lg:mr-12">
-                    <form>
+                    <form onSubmit={onSubmit}>
                         <Input
                             direction="ltr"
                             id="email"
@@ -46,10 +60,17 @@ const ForgotPassword = () => {
                                     ثبت نام
                                 </Link>
                             </p>
+                            <p>
+                                <Link
+                                    to="/sign-in"
+                                    className="text-blue-600 font-bold hover:text-blue-700 transition duration-200 ease-in-out"
+                                >
+                                    ورود به حساب کاربری
+                                </Link>
+                            </p>
                         </div>
+                        <AuthActions type="submit" label="ارسال رمز بازیابی" />
                     </form>
-
-                    <AuthActions type="submit" label="ارسال رمز بازیابی" />
                 </div>
             </div>
         </section>

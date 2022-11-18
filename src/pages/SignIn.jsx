@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { toast } from 'react-toastify';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Input from '../components/utils/Input';
 
 import AuthActions from '../components/AuthActions';
@@ -13,7 +15,30 @@ const SignIn = () => {
             [event.target.id]: event.target.value,
         }));
     };
-
+    const navigate = useNavigate();
+    const onSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            const auth = getAuth();
+            const userCredential = await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+            console.log(userCredential.user);
+            if (userCredential.user) {
+                navigate('/');
+            }
+        } catch (error) {
+            toast.error('خطا در ورود کاربر');
+        }
+    };
+    const fullName = {
+        name: 'saeed',
+        lastName: 'kavand',
+    };
+    const { name, lastName } = fullName;
+    console.log(`Your name is ${name} ${lastName}`);
     return (
         <section>
             <h1 className="text-3xl text-center mt-6 font-bold ">
@@ -28,7 +53,7 @@ const SignIn = () => {
                     />
                 </div>
                 <div className="w-full md:w-[67%] lg:w-[40%] lg:mr-12">
-                    <form>
+                    <form onSubmit={onSubmit}>
                         <Input
                             direction="ltr"
                             id="email"
@@ -58,17 +83,20 @@ const SignIn = () => {
                                     ثبت نام
                                 </Link>
                             </p>
-                            <p
-                                className={
-                                    'text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out'
-                                }
-                            >
-                                <Link to="/forgot-password">فراموشی رمز</Link>
+                            <p className={'text-gray-500 text-md'}>
+                                بازیابی {" "}
+                                <Link
+                                    className={
+                                        'text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out'
+                                    }
+                                    to="/forgot-password"
+                                >
+                                    رمز ورود
+                                </Link>
                             </p>
                         </div>
+                        <AuthActions type="submit" label="ورود" />
                     </form>
-
-                    <AuthActions type="submit" label="ورود" />
                 </div>
             </div>
         </section>
