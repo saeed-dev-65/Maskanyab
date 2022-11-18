@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Input from '../components/utils/Input';
 
 import AuthActions from '../components/AuthActions';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { toast } from 'react-toastify';
 const SignIn = () => {
     const [formData, setFormData] = useState({ email: '', passwors: '' });
     const { email, password } = formData;
@@ -12,6 +14,24 @@ const SignIn = () => {
             ...prevState,
             [event.target.id]: event.target.value,
         }));
+    };
+    const navigate = useNavigate();
+    const onSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            const auth = getAuth();
+            const userCredential = await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+            console.log(userCredential.user);
+            if (userCredential.user) {
+                navigate('/');
+            }
+        } catch (error) {
+            toast.error('خطا در ورود کاربر');
+        }
     };
 
     return (
@@ -28,7 +48,7 @@ const SignIn = () => {
                     />
                 </div>
                 <div className="w-full md:w-[67%] lg:w-[40%] lg:mr-12">
-                    <form>
+                    <form onSubmit={onSubmit}>
                         <Input
                             direction="ltr"
                             id="email"
@@ -59,7 +79,7 @@ const SignIn = () => {
                                 </Link>
                             </p>
                             <p className={'text-gray-500 text-md'}>
-                                بازیابی {" "}
+                                بازیابی{' '}
                                 <Link
                                     className={
                                         'text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out'
@@ -70,9 +90,8 @@ const SignIn = () => {
                                 </Link>
                             </p>
                         </div>
+                        <AuthActions type="submit" label="ورود" />
                     </form>
-
-                    <AuthActions type="submit" label="ورود" />
                 </div>
             </div>
         </section>
