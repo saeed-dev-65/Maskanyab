@@ -20,7 +20,7 @@ const ForgotPassword = () => {
         try {
             const auth = getAuth();
             await sendPasswordResetEmail(auth, email);
-            toast.success(` ${email} کد بازیابی شما به ارسال شد`);
+            toast.success(` ${email} لینک بازیابی رمز عبور  شما به ارسال شد`);
         } catch (error) {
             toast.error('امکان ارسال کد بازیابی وجود ندارد');
         }
