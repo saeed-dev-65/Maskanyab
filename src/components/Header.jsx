@@ -1,7 +1,19 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useAuthStatus } from '../hooks/useAuthStatus';
 
 const Header = () => {
+    const [pageStatus, setPageStatus] = useState('ورود');
+
+    const auth = getAuth();
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            user ? setPageStatus('پروفایل') : setPageStatus('ورود');
+        });
+    }, [auth]);
+
     const location = useLocation();
     const navigate = useNavigate();
     function activeLink(link) {
@@ -49,13 +61,13 @@ const Header = () => {
                         </li>
                         <li
                             className={`cursor-pointer text-sm font-semibold text-gray-400 py-3 border-b-[3px] border-transparent ${
-                                activeLink('/sign-in')
+                                activeLink('/sign-in') || activeLink('/profile')
                                     ? 'text-black border-red-500'
                                     : ''
                             }`}
-                            onClick={() => navigate('/sign-in')}
+                            onClick={() => navigate('/profile')}
                         >
-                            ورود
+                            {pageStatus}
                         </li>
                     </ul>
                 </nav>
