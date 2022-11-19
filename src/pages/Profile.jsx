@@ -1,22 +1,44 @@
 import { useState } from 'react';
-import { getAuth } from 'firebase/auth';
+import { getAuth, updateProfile } from 'firebase/auth';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../API/firebase.config';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Profile = () => {
     const auth = getAuth();
     const navigate = useNavigate();
-
-    const [editable, setEditable] = useState(false);
-
-    const editNameHandler = () => {
-        setEditable((prevState) => !prevState);
-    };
-
     const [formData, setFormDate] = useState({
         name: auth.currentUser.displayName,
         email: auth.currentUser.email,
     });
+
+    const [editable, setEditable] = useState(false);
     const { name, email } = formData;
+    const onsubmit = async () => {
+        try {
+            if (auth.currentUser.displayName !== name) {
+                await updateProfile(auth.currentUser, {
+                    displayName: name,
+                });
+                const docRef = doc(db, 'users', auth.currentUser.uid);
+                await updateDoc(docRef, {
+                    name,
+                });
+            }
+            toast.success('پروفایل شما با موفقیت آپدیت شد');
+        } catch (error) {
+            toast.error(
+                ' امکان اجرای درخواست شما وجود ندارد لطفا دوباره امتحان کنید'
+            );
+        }
+    };
+
+    const editNameHandler = () => {
+        editable && onsubmit();
+        setEditable((prevState) => !prevState);
+    };
+
     const logoutHandler = () => {
         auth.signOut();
         navigate('/');
@@ -47,9 +69,12 @@ const Profile = () => {
                                     className="w-full px-4 py-2 text-xl text-gray-600 bg-transparent border-transparent transition ease-in-out  border-b-[2px] border-b-gray-300 focus:border-b-orange-600 focus:outline-0 focus:border-transparent focus:ring-0"
                                     value={name}
                                     onChange={(e) =>
-                                        setFormDate({ name: e.target.value })
+                                        setFormDate((prevState) => ({
+                                            ...prevState,
+                                            [e.target.id]: e.target.value,
+                                        }))
                                     }
-                                    disabled={editable ? false : true}
+                                    disabled={!editable}
                                 />
                             </div>
                             {/* <hr className="bg-gray-300 border-0 h-[1px]" /> */}
